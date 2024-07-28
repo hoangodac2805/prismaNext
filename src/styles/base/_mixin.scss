@@ -1,0 +1,88 @@
+@mixin hero($color: $cl_primary) {
+  font-weight: 500;
+  font-size:96px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: $color;
+}
+
+@mixin heading_1($color: $cl_primary) {
+  font-weight: 500;
+  font-size: 80px;
+  line-height: calc(84 / 80);
+  letter-spacing: -0.03em;
+  color: $color;
+}
+
+@mixin heading_2($color: $cl_primary) {
+  font-weight: 500;
+  font-size: 72px;
+  line-height: calc(76 / 72);
+  letter-spacing: -0.02em;
+  color: $color;
+}
+
+@mixin heading_3($color: $cl_primary) {
+  font-weight: 500;
+  font-size: 58px;
+  line-height: calc(58 / 54);
+  letter-spacing: -0.01em;
+  color: $color;
+}
+
+@mixin heading_4($color: $cl_primary) {
+  font-weight: 500;
+  font-size: 40px;
+  line-height: calc(44 / 40);
+  letter-spacing: -0.01em;
+  color: $color;
+}
+
+@mixin heading_5($color: $cl_primary) {
+  font-weight: 500;
+  font-size: 34px;
+  line-height: calc(38 / 34);
+  letter-spacing: -0.01em;
+  color: $color;
+}
+
+@mixin heading_6($color: $cl_primary) {
+  font-weight: 500;
+  font-size: 28px;
+  line-height: calc(28 / 34);
+  letter-spacing: -0.01em;
+  color: $color;
+}
+
+@mixin body_2($color: $cl_primary) {
+  font-size: 16px;
+  line-height: calc(26 / 16);
+  color: $color;
+  font-weight: 400;
+}
+
+
+@mixin button_S($color: $cl_white){
+  font-size: 16px;
+  text-align: center;
+  letter-spacing: -0.025em;
+  line-height: calc(28 / 16);
+  font-weight: 500;
+  color: $color;
+}
+
+
+
+@mixin flex_b_c(){
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex_c_c(){
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
