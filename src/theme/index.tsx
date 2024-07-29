@@ -13,11 +13,17 @@ const withTheme = (node: JSX.Element) => (
           borderRadius: 8,
           colorText: "#000",
           fontSize: 14,
+          colorTextHeading: "#1677ff",
         },
         components: {
           Form: {
             fontSize: 12,
             labelFontSize: 14,
+            colorTextLabel: "#000",
+          },
+          Menu: {
+            fontSize: 16,
+            colorTextLabel: "#fff",
           },
         },
       }}

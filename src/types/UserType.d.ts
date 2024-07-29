@@ -17,4 +17,9 @@ declare global {
   };
 
   type CommonUserRes = Omit<User, "password">;
+
+  type QueryUsersRes = {
+    users: Array<CommonUserRes>;
+    paginate: Paginate;
+  };
 }

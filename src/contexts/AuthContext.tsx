@@ -11,6 +11,7 @@ import { AUTH_ROUTER, NO_PROTECT_ROUTER, ROUTER } from "@/config/router";
 import { getErrorMessageAxiosError } from "@/utils";
 import LoginForm from "@/components/AuthForm/LoginForm";
 import useLoadingScreen from "@/hooks/useLoadingScreen";
+import { Role } from "@/enums";
 interface IAuthContext {
   authed: boolean;
   loading: boolean;
@@ -34,14 +35,21 @@ export const AuthProvider: React.FC<{
     setLoading(true);
     AuthApi.Login(input)
       .then((res) => {
-        if (remember) {
-          Cookie.setAuthToken(res.data.token);
+        if ([Role.ADMIN, Role.SUPERADMIN].includes(res.data.user.role)) {
+         
+          if (remember) {
+            Cookie.setAuthToken(res.data.token);
+          } else {
+            Session.setAuthToken(res.data.token);
+          }
+          notification.success({ message: "Đăng nhập thành công" });
+          setAuthed(true);
+          setLoginedUser(res.data.user);
         } else {
-          Session.setAuthToken(res.data.token);
+          notification.warning({ message: "Không đủ quyền truy cập! " });
+          console.log(`Role`, Role);
+          console.log(res.data.user.role)
         }
-        notification.success({ message: "Đăng nhập thành công" });
-        setAuthed(true);
-        setLoginedUser(res.data.user);
       })
       .catch((error) => {
         if (axios.isAxiosError(error)) {

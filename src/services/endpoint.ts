@@ -1,5 +1,5 @@
 const AuthRouter = "authentication/";
-const AdminUserRouter = "admin/user/";
+const AdminUserRouter = "admin/users/";
 export const AUTHEN_ENDPOINT = {
   LOGIN: AuthRouter + "login",
   REGISTER: AuthRouter + "register",
@@ -8,4 +8,5 @@ export const AUTHEN_ENDPOINT = {
 
 export const USER_ENDPOINT = {
   CREATE: AdminUserRouter + "create",
+  GET_USERS : AdminUserRouter + "getMany"
 };

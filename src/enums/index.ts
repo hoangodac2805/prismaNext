@@ -1,7 +1,7 @@
 export enum Role {
-  USER,
-  ADMIN,
-  SUPERADMIN,
+  USER = "USER",
+  ADMIN = "ADMIN",
+  SUPERADMIN = "SUPERADMIN",
 }
 
 export enum HTTPSTATUS {
@@ -43,5 +43,4 @@ export enum ERRORTYPE {
   ZOD_ERROR = "ZodError",
   UNAUTHORIZED_ERROR = "Unauthorized",
   FORBIDDEN = "Forbiden",
-
 }

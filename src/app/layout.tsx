@@ -5,6 +5,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import ToasterProvider from "@/contexts/ToasterContext";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import LoadingScreen from "@/components/LoadingScreen";
+import { QueryProvider } from "@/contexts/QueryContext";
 const noto_serif = Noto_Serif_JP({
   variable: "--font-noto",
   subsets: ["latin"],
@@ -29,7 +30,7 @@ export default function RootLayout({
         <LoadingScreen />
         <AuthProvider>
           <AntdRegistry>
-           {children}
+            <QueryProvider>{children}</QueryProvider>
           </AntdRegistry>
         </AuthProvider>
       </body>
