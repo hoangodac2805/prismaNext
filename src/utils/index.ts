@@ -11,10 +11,10 @@ export const getErrorMessageAxiosError = (
       case ERRORTYPE.DATA_ERROR:
         message = error.response.data.message;
         break;
-        case ERRORTYPE.ZOD_ERROR:
-        let issuesMess:string[] = error.response.data.issues.map((issue:any)=>{
+      case ERRORTYPE.ZOD_ERROR:
+        let issuesMess: string[] = error.response.data.issues.map((issue: any) => {
           return capitalize(issue.path[0]) + ": " + issue.message;
-        }) 
+        })
         message = issuesMess.join('\n');
       default:
         break;
@@ -25,6 +25,18 @@ export const getErrorMessageAxiosError = (
 };
 
 
-const capitalize = (text:string) => {
+const capitalize = (text: string) => {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
+
+export const debounce = <F extends (...args: any[]) => any>(func: F, delay: number) => {
+  let timeoutId: NodeJS.Timeout;
+  return (...args: Parameters<F>): void => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+};

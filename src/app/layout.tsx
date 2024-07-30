@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { Noto_Serif_JP } from "next/font/google";
 import "@/styles/index.scss";
 import { AuthProvider } from "@/contexts/AuthContext";
-import ToasterProvider from "@/contexts/ToasterContext";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import LoadingScreen from "@/components/LoadingScreen";
 import { QueryProvider } from "@/contexts/QueryContext";
+import AllDrawer from "@/components/Drawer";
 const noto_serif = Noto_Serif_JP({
   variable: "--font-noto",
   subsets: ["latin"],
@@ -26,11 +26,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={noto_serif.className}>
-        <ToasterProvider />
         <LoadingScreen />
         <AuthProvider>
           <AntdRegistry>
-            <QueryProvider>{children}</QueryProvider>
+            <QueryProvider>
+              <AllDrawer />
+              {children}
+            </QueryProvider>
           </AntdRegistry>
         </AuthProvider>
       </body>

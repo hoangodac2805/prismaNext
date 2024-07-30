@@ -13,7 +13,6 @@ const withTheme = (node: JSX.Element) => (
           borderRadius: 8,
           colorText: "#000",
           fontSize: 14,
-          colorTextHeading: "#1677ff",
         },
         components: {
           Form: {

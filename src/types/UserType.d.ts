@@ -22,4 +22,14 @@ declare global {
     users: Array<CommonUserRes>;
     paginate: Paginate;
   };
+
+  type EditUserInput = {
+    userName: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    avatar?: FormData;
+    avatarId?:number;
+  };
 }

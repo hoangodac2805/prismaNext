@@ -10,15 +10,9 @@ import { getErrorMessageAxiosError } from "@/utils";
 import { useRouter } from "next/navigation";
 import { ROUTER } from "@/config/router";
 import useLoadingScreen from "@/hooks/useLoadingScreen";
-type FieldType = {
-  email: string;
-  password: string;
+type FieldType = RegisterUserInput & {
   password2?: string;
-  userName: string;
-  firstName?: string;
-  lastName?: string;
 };
-
 const RegisterForm = () => {
   const router = useRouter();
   const { setLoadingOff, setLoadingOn } = useLoadingScreen();
@@ -54,7 +48,6 @@ const RegisterForm = () => {
   return withTheme(
     <div className={styles.wrapper}>
       <Form
-        name="basic"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 12 }}
         className={styles.form}

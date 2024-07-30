@@ -8,5 +8,6 @@ export const AUTHEN_ENDPOINT = {
 
 export const USER_ENDPOINT = {
   CREATE: AdminUserRouter + "create",
-  GET_USERS : AdminUserRouter + "getMany"
+  GET_USERS : AdminUserRouter + "getMany",
+  UPDATE_EMAIL : AdminUserRouter + "updateEmail"
 };

@@ -12,8 +12,12 @@ const GetUsers = (userInput: QueryUsersInput) => {
     },
   });
 };
+const UpdateEmail = (userInput: {id:number, email: string }) => {
+  return baseApi.put<CommonUserRes>(USER_ENDPOINT.UPDATE_EMAIL,userInput);
+};
 const UsersApi = {
   GetUsers,
+  UpdateEmail
 };
 
 export default UsersApi;

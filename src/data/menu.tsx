@@ -4,17 +4,17 @@ import { ROUTER } from "@/config/router";
 
 export const MenuData: MenuProps["items"] = [
   {
-    label: "Users",
+    label: "User",
     key: "user",
     icon: <UserOutlined />,
     children: [
       {
-        label: "All Users",
+        label: "List users",
         key: ROUTER.USERS,
         icon: <UserOutlined />,
       },
       {
-        label: "Add User",
+        label: "Add user",
         key: ROUTER.USERS_ADD,
         icon: <UserAddOutlined />,
       },

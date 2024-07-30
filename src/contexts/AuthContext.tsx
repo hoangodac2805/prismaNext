@@ -36,7 +36,6 @@ export const AuthProvider: React.FC<{
     AuthApi.Login(input)
       .then((res) => {
         if ([Role.ADMIN, Role.SUPERADMIN].includes(res.data.user.role)) {
-         
           if (remember) {
             Cookie.setAuthToken(res.data.token);
           } else {
@@ -47,8 +46,6 @@ export const AuthProvider: React.FC<{
           setLoginedUser(res.data.user);
         } else {
           notification.warning({ message: "Không đủ quyền truy cập! " });
-          console.log(`Role`, Role);
-          console.log(res.data.user.role)
         }
       })
       .catch((error) => {

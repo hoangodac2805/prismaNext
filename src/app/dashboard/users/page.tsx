@@ -1,138 +1,150 @@
 "use client";
-import { Col, Row } from "antd";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Button, Col, Flex, Form, Input, Row, Tooltip } from "antd";
 import Title from "antd/es/typography/Title";
-import React, { useEffect, useState } from "react";
 import type { GetProp, TableProps } from "antd";
 import { Table } from "antd";
-import type { SorterResult } from "antd/es/table/interface";
-import qs from "qs";
 import { useQueryUsers } from "@/hooks/Query";
+import { debounce } from "@/utils";
+import Link from "next/link";
+import { EditFilled, UserAddOutlined, UserOutlined } from "@ant-design/icons";
+import { ROUTER } from "@/config/router";
+import { useCommonDrawer } from "@/hooks/Drawer/useCommonDrawer";
+import Edit_UserForm from "@/components/BodyForm/Edit_UserForm";
 
 type ColumnsType<T> = TableProps<T>["columns"];
+
 type TablePaginationConfig = Exclude<
   GetProp<TableProps, "pagination">,
   boolean
 >;
 
-interface DataType {
-  name: {
-    first: string;
-    last: string;
-  };
-  gender: string;
-  email: string;
-  login: {
-    uuid: string;
-  };
-}
-
 interface TableParams {
   pagination?: TablePaginationConfig;
-  sortField?: SorterResult<any>["field"];
-  sortOrder?: SorterResult<any>["order"];
-  filters?: Parameters<GetProp<TableProps, "onChange">>[1];
 }
-const columns: ColumnsType<CommonUserRes> = [
-  {
-    title: "Id",
-    dataIndex: "id",
-    // sorter: true,
-    // render: (name) => `${name.first} ${name.last}`,
-    width: "10%",
-  },
-  {
-    title: "User Name",
-    dataIndex: "username",
-    // sorter: true,
-    // render: (name) => `${name.first} ${name.last}`,
-    width: "20%",
-  },
-  {
-    title: "Email",
-    dataIndex: "email",
-    // filters: [
-    //   { text: 'Male', value: 'male' },
-    //   { text: 'Female', value: 'female' },
-    // ],
-    width: "20%",
-  },
-  {
-    title: "Email",
-    dataIndex: "email",
-  },
-];
 
 const Home = () => {
-  const [tableParams, setTableParams] = useState<TableParams>({
-    pagination: {
-      current: 1,
-      pageSize: 1,
-    },
-  });
-  const { data, isError, isLoading, isFetching } = useQueryUsers({
+  const [tableParams, setTableParams] = useState<TableParams>({});
+  const [editingUser, setEditingUser] = useState<CommonUserRes | null>(null);
+  const [count, setCount] = useState(1);
+  const [search, setSearch] = useState("");
+
+  const { data, isFetching } = useQueryUsers({
     page: tableParams.pagination?.current,
     take: tableParams.pagination?.pageSize,
+    search: search,
   });
-  // const fetchData = () => {
-  //   setLoading(true);
-  //   fetch(`https://randomuser.me/api?${qs.stringify(getRandomuserParams(tableParams))}`)
-  //     .then((res) => res.json())
-  //     .then(({ results }) => {
-  //       setData(results);
-  //       setLoading(false);
-  //       setTableParams({
-  //         ...tableParams,
-  //         pagination: {
-  //           ...tableParams.pagination,
-  //           total: 200,
-  //           // 200 is mock data, you should read it from server
-  //           // total: data.totalCount,
-  //         },
-  //       });
-  //     });
-  // };
 
-  useEffect(() => {
-      setTableParams({
-        ...tableParams,
-        pagination :{
-          ...tableParams.pagination,
-          total:data?.data.paginate.totalRecord
-        }
-      })
-  }, [
-    tableParams.pagination?.current,
-    tableParams.pagination?.pageSize,
-    tableParams?.sortOrder,
-    tableParams?.sortField,
-    JSON.stringify(tableParams.filters),
-    data
-  ]);
+  const { openDrawer, CommonDrawer } = useCommonDrawer();
 
-  const handleTableChange: TableProps["onChange"] = (
-    pagination,
-    filters,
-    sorter
-  ) => {
+  const handleTableChange: TableProps["onChange"] = (pagination) => {
     setTableParams({
       pagination,
-      filters,
-      sortOrder: Array.isArray(sorter) ? undefined : sorter.order,
-      sortField: Array.isArray(sorter) ? undefined : sorter.field,
     });
-
-    // `dataSource` is useless since `pageSize` changed
-    // if (pagination.pageSize !== tableParams.pagination?.pageSize) {
-    //   setData([]);
-    // }
   };
+
+  const renderEditContent: React.ReactNode = useMemo(() => {
+    return <Edit_UserForm user={editingUser} count={count} />;
+  }, [editingUser]);
+
+  const columns: ColumnsType<CommonUserRes> = [
+    {
+      title: "ID",
+      dataIndex: "id",
+    },
+    {
+      title: "User Name",
+      dataIndex: "userName",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+    },
+    {
+      title: "First Name",
+      dataIndex: "firstName",
+    },
+    {
+      title: "Last Name",
+      dataIndex: "lastName",
+    },
+    {
+      title: "Role",
+      dataIndex: "role",
+    },
+    {
+      title: "Action",
+      dataIndex: "",
+      key: "x",
+      render: (_, record) => {
+        return (
+          <Flex justify="flex-start" gap="10px">
+            <Tooltip title="Sửa đổi">
+              <Button>
+                <Link href={ROUTER.USERS_ADD}>
+                  <EditFilled />
+                </Link>
+              </Button>
+            </Tooltip>
+            <Tooltip title="Xem">
+              <Button
+                onClick={() => {
+                  setEditingUser(record);
+                  setCount((count) => count+=1);
+                  openDrawer();
+                }}
+              >
+                <UserOutlined />
+              </Button>
+            </Tooltip>
+          </Flex>
+        );
+      },
+    },
+  ];
+
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      setSearch(value);
+    }, 300),
+    []
+  );
+
+  useEffect(() => {
+    setTableParams({
+      ...tableParams,
+      pagination: {
+        ...tableParams.pagination,
+        total: data?.data.paginate.totalRecord,
+      },
+    });
+  }, [tableParams.pagination?.current, tableParams.pagination?.pageSize, data]);
+
   return (
     <main>
       <Row>
         <Col span={24}>
           <Title style={{ textAlign: "center" }} color="#2F54EB" level={1}>
-            All Users
+            Danh sách người dùng
           </Title>
+        </Col>
+        <Col span={24}>
+          <Flex justify="space-between">
+            <Form.Item label="Tìm kiếm">
+              <Input
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  debouncedSearch(e.target.value);
+                }}
+              />
+            </Form.Item>
+            <Tooltip title="Thêm người dùng">
+              <Button>
+                <Link href={ROUTER.USERS_ADD}>
+                  <UserAddOutlined />
+                </Link>
+              </Button>
+            </Tooltip>
+          </Flex>
         </Col>
         <Col span={24}>
           <Table
@@ -140,11 +152,12 @@ const Home = () => {
             rowKey={(record) => record.id}
             dataSource={data?.data.users}
             pagination={tableParams.pagination}
-            loading={isLoading}
+            loading={isFetching}
             onChange={handleTableChange}
           />
         </Col>
       </Row>
+      <CommonDrawer>{renderEditContent}</CommonDrawer>
     </main>
   );
 };
