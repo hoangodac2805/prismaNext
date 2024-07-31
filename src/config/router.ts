@@ -4,7 +4,8 @@ export const ROUTER = {
   LOGIN: "/login",
   REGISTER: "/register",
   USERS :"/dashboard/users",
-  USERS_ADD: "/dashboard/users/add"
+  USERS_ADD: "/dashboard/users/add",
+  USERS_DETAIL: "/dashboard/users/",
 };
 
 export const NO_PROTECT_ROUTER = [ROUTER.LOGIN, ROUTER.REGISTER];

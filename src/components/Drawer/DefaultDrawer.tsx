@@ -9,25 +9,29 @@ interface Props {
 }
 
 const DefaultDrawer: React.FC<Props> = ({ children }) => {
-    const { isOpen, width, closeModal, position, content, title, isLoading } = useDefaultDrawer()
+    const { isOpen, width, closeDrawer, position, content, title, isLoading, btnPrimaryLabel, btnPrimaryFnc } = useDefaultDrawer()
     return withTheme(
         <Drawer
             title={title}
             placement={position}
             width={width}
-            onClose={closeModal}
+            onClose={closeDrawer}
             open={isOpen}
             loading={isLoading}
             extra={
                 <Space>
-                    <Button onClick={closeModal}>Cancel</Button>
-                    <Button type="primary" onClick={closeModal}>
-                        OK
+                    <Button onClick={closeDrawer}>Cancel</Button>
+                    <Button type="primary" onClick={()=>{
+                        if(btnPrimaryFnc){
+                            btnPrimaryFnc();
+                        }
+                        closeDrawer()
+                    }}>
+                        {btnPrimaryLabel || "OK"}
                     </Button>
                 </Space>
             }
         >
-            {<p>...a</p>}
             {content}
             {children}
         </Drawer>

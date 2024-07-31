@@ -1,4 +1,5 @@
 import { ERRORTYPE } from "@/enums";
+import { RcFile } from "antd/es/upload";
 import { AxiosError } from "axios";
 
 export const getErrorMessageAxiosError = (
@@ -12,10 +13,12 @@ export const getErrorMessageAxiosError = (
         message = error.response.data.message;
         break;
       case ERRORTYPE.ZOD_ERROR:
-        let issuesMess: string[] = error.response.data.issues.map((issue: any) => {
-          return capitalize(issue.path[0]) + ": " + issue.message;
-        })
-        message = issuesMess.join('\n');
+        let issuesMess: string[] = error.response.data.issues.map(
+          (issue: any) => {
+            return capitalize(issue.path[0]) + ": " + issue.message;
+          }
+        );
+        message = issuesMess.join("\n");
       default:
         break;
     }
@@ -24,12 +27,14 @@ export const getErrorMessageAxiosError = (
   return message;
 };
 
-
 const capitalize = (text: string) => {
   return text.charAt(0).toUpperCase() + text.slice(1);
-}
+};
 
-export const debounce = <F extends (...args: any[]) => any>(func: F, delay: number) => {
+export const debounce = <F extends (...args: any[]) => any>(
+  func: F,
+  delay: number
+) => {
   let timeoutId: NodeJS.Timeout;
   return (...args: Parameters<F>): void => {
     if (timeoutId) {
@@ -40,3 +45,12 @@ export const debounce = <F extends (...args: any[]) => any>(func: F, delay: numb
     }, delay);
   };
 };
+
+export const getBase64 = (file: RcFile): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
+

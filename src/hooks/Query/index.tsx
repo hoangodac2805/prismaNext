@@ -1,4 +1,5 @@
 import { UsersApi } from "@/services/api";
+import { USER_ENDPOINT } from "@/services/endpoint";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 export const useQueryUsers = ({
@@ -10,7 +11,7 @@ export const useQueryUsers = ({
 }: QueryUsersInput) => {
   const userInput = { page, take, search, role, isActive };
   return useQuery({
-    queryKey: ["users", page, take, search, role, isActive],
+    queryKey: [USER_ENDPOINT, page, take, search, role, isActive],
     queryFn: () => UsersApi.GetUsers(userInput),
     placeholderData: keepPreviousData,
   });

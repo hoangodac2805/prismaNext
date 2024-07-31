@@ -24,6 +24,9 @@ const withTheme = (node: JSX.Element) => (
             fontSize: 16,
             colorTextLabel: "#fff",
           },
+          Divider: {
+            fontSize:16
+          }
         },
       }}
     >

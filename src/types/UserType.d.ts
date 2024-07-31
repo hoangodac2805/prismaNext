@@ -1,4 +1,5 @@
 import { Role } from "@/enums";
+import { UploadFile } from "antd";
 declare global {
   type User = {
     id: number;
@@ -30,6 +31,15 @@ declare global {
     email: string;
     password: string;
     avatar?: FormData;
-    avatarId?:number;
+    avatarId?: number;
+  };
+
+  type AddUserInput = {
+    userName: string;
+    firstName?: string;
+    lastName?: string;
+    email: string;
+    password: string;
+    avatar?: { file: UploadFile, fileList: UploadFile[] };
   };
 }

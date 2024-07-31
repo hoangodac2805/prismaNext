@@ -12,12 +12,16 @@ const GetUsers = (userInput: QueryUsersInput) => {
     },
   });
 };
+const createUser = (userInput:FormData) =>{
+  return baseApi.post<QueryUsersRes>(USER_ENDPOINT.CREATE,userInput)
+}
 const UpdateEmail = (userInput: {id:number, email: string }) => {
   return baseApi.put<CommonUserRes>(USER_ENDPOINT.UPDATE_EMAIL,userInput);
 };
 const UsersApi = {
   GetUsers,
-  UpdateEmail
+  UpdateEmail,
+  createUser
 };
 
 export default UsersApi;
