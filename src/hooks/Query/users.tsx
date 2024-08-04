@@ -11,8 +11,14 @@ export const useQueryUsers = ({
 }: QueryUsersInput) => {
   const userInput = { page, take, search, role, isActive };
   return useQuery({
-    queryKey: [USER_ENDPOINT, page, take, search, role, isActive],
+    queryKey: [USER_ENDPOINT.BASE, page, take, search, role, isActive],
     queryFn: () => UsersApi.GetUsers(userInput),
     placeholderData: keepPreviousData,
   });
 };
+
+
+export const useQueryUserParam = (id:string|number) => useQuery({
+  queryKey: [USER_ENDPOINT.BASE,id],
+  queryFn:()=>UsersApi.GetUserByParam(id)
+})

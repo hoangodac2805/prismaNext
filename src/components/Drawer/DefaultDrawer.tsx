@@ -21,8 +21,8 @@ const DefaultDrawer: React.FC<Props> = ({ children }) => {
             extra={
                 <Space>
                     <Button onClick={closeDrawer}>Cancel</Button>
-                    <Button type="primary" onClick={()=>{
-                        if(btnPrimaryFnc){
+                    <Button type="primary" onClick={() => {
+                        if (btnPrimaryFnc) {
                             btnPrimaryFnc();
                         }
                         closeDrawer()
@@ -34,6 +34,7 @@ const DefaultDrawer: React.FC<Props> = ({ children }) => {
         >
             {content}
             {children}
+         
         </Drawer>
     )
 }

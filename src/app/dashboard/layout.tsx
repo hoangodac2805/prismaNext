@@ -6,7 +6,7 @@ import { MenuData } from "@/data/menu";
 import { useRouter } from "next/navigation";
 const { Header, Content, Footer, Sider } = Layout;
 
-const layout = ({ children }: { children: React.ReactNode }) => {
+const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -46,4 +46,4 @@ const layout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default layout;
+export default DashboardLayout;

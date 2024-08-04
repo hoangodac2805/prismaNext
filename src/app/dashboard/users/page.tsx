@@ -1,18 +1,21 @@
 "use client";
-import React, { use, useCallback, useEffect, useState } from "react";
-import { Button, Col, Divider, Flex, Form, Input, Row, Tooltip } from "antd";
+import React, { useCallback, useEffect, useState } from "react";
+import { Button, Col, Flex, Form, Input, notification, Popconfirm, Row, Tooltip } from "antd";
 import Title from "antd/es/typography/Title";
 import type { GetProp, TableProps } from "antd";
 import { Table } from "antd";
-import { useQueryUsers } from "@/hooks/Query";
-import { debounce } from "@/utils";
+import { useQueryUsers } from "@/hooks/Query/users";
+import { debounce, getErrorMessageAxiosError } from "@/utils";
 import Link from "next/link";
-import { EditFilled, UserAddOutlined, UserOutlined } from "@ant-design/icons";
+import { EditFilled, UserAddOutlined, UserOutlined, UserDeleteOutlined } from "@ant-design/icons";
 import { ROUTER } from "@/config/router";
-import Paragraph from "antd/es/typography/Paragraph";
 import useDefaultDrawer from "@/hooks/Drawer/useDefaultDrawer";
 import { useRouter, useSearchParams } from "next/navigation";
 import useAddUserDrawer from "@/hooks/Drawer/useAddUserDrawer";
+import { useQueryString } from "@/hooks/useQueryString";
+import ProfileDrawerBody from "@/components/SubUserComponent/ProfileDrawerBody";
+import { useDeleteUser } from "@/hooks/Mutation/users";
+import axios from "axios";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 
@@ -26,21 +29,14 @@ interface TableParams {
 }
 
 const Home = () => {
-  const [tableParams, setTableParams] = useState<TableParams>({});
-  const [search, setSearch] = useState("");
   const route = useRouter();
-  const searchParams = useSearchParams();
-
-
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString())
-      params.set(name, value)
- 
-      return params.toString()
-    },
-    [searchParams]
-  )
+  const params = useSearchParams();
+  const { generate } = useQueryString();
+  const [tableParams, setTableParams] = useState<TableParams>({
+    pagination: {
+      current: Number(params.get("paged")?.trim()) || 1
+    }
+  });
   const {
     openDrawer,
     setContent,
@@ -49,13 +45,16 @@ const Home = () => {
     setBtnPrimaryFnc,
   } = useDefaultDrawer();
   const addUserDrawer = useAddUserDrawer();
+  const deleteUserMutation = useDeleteUser();
+
   const { data, isFetching } = useQueryUsers({
-    page: tableParams.pagination?.current,
+    page: Number(params.get("paged")?.trim()) || 1,
     take: tableParams.pagination?.pageSize,
-    search: search,
+    search: params.get("search")?.trim() || "",
   });
 
   const handleTableChange: TableProps["onChange"] = (pagination) => {
+    generate({ paged: pagination.current })
     setTableParams({
       pagination,
     });
@@ -63,14 +62,14 @@ const Home = () => {
 
   const debouncedSearch = useCallback(
     debounce((value) => {
-      setSearch(value);
+      generate({ search: value, paged: 1 })
     }, 300),
     []
   );
 
   const handleOpenProfile = (user: CommonUserRes) => {
     setTitle(user.userName);
-    setContent(<DrawerBody user={user} />);
+    setContent(<ProfileDrawerBody user={user} />);
     setBtnPrimaryLabel(
       <Tooltip title="Chỉnh sửa">
         <EditFilled />
@@ -81,6 +80,25 @@ const Home = () => {
     });
     openDrawer();
   };
+
+
+  const handleDeleteUser = (id:number) =>{
+    deleteUserMutation.mutate(id,{
+      onSuccess:()=>{
+        notification.success({ message: "Xoá user thành công" });
+      },
+      onError:(error)=>{
+        if (axios.isAxiosError(error)) {
+          notification.error({
+            message: "Xóa user không thành công!",
+            description: getErrorMessageAxiosError(error),
+          });
+        } else {
+          notification.error({ message: "Xóa user không thành công!" });
+        }
+      }
+    })
+  }
   const columns: ColumnsType<CommonUserRes> = [
     {
       title: "ID",
@@ -129,6 +147,15 @@ const Home = () => {
                 </Link>
               </Button>
             </Tooltip>
+            <Tooltip title="Xóa">
+              <Popconfirm title="Xóa user?" description="Bạn có muốn xóa user này" okText="Xóa" cancelText="Hủy" onConfirm={() => {
+               handleDeleteUser(record.id)
+              }}>
+                <Button danger >
+                  <UserDeleteOutlined />
+                </Button>
+              </Popconfirm>
+            </Tooltip>
           </Flex>
         );
       },
@@ -141,15 +168,12 @@ const Home = () => {
       ...tableParams,
       pagination: {
         ...tableParams.pagination,
+        current: data?.data.paginate.page,
         total: data?.data.paginate.totalRecord,
       },
     });
-  }, [tableParams.pagination?.current, tableParams.pagination?.pageSize, data]);
+  }, [data]);
 
-
-  useEffect(()=>{
-    searchParams.set
-  })
   return (
     <main>
       <Row>
@@ -160,8 +184,9 @@ const Home = () => {
         </Col>
         <Col span={24}>
           <Flex justify="space-between">
-            <Form.Item label="Tìm kiếm">
+            <Form.Item label="Tìm kiếm" initialValue={params.get("search")?.trim() || ""}>
               <Input
+                defaultValue={params.get("search")?.trim() || ""}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   debouncedSearch(e.target.value);
                 }}
@@ -195,50 +220,3 @@ const Home = () => {
 
 export default Home;
 
-const DrawerBody: React.FC<{ user: CommonUserRes }> = ({ user }) => {
-  return (
-    <>
-      <Title level={4} style={{ color: "#377DFF", textAlign: "center" }}>
-        Thông tin user
-      </Title>
-      <Row gutter={[20, 20]}>
-        <Col span={12}>
-          <Divider orientation="left" plain>
-            ID
-          </Divider>
-          <Paragraph copyable={{ text: String(user.id) }}>{user.id}</Paragraph>
-        </Col>
-        <Col span={12}>
-          <Divider orientation="left" plain>
-            Email
-          </Divider>
-          <Paragraph copyable={{ text: user.email }}>{user.email}</Paragraph>
-        </Col>
-        <Col span={12}>
-          <Divider orientation="left" plain>
-            FirstName
-          </Divider>
-          <Paragraph copyable={{ text: user.firstName }}>
-            {user.firstName}
-          </Paragraph>
-        </Col>
-        <Col span={12}>
-          <Divider dashed orientation="left" plain>
-            LastName
-          </Divider>
-          <Paragraph copyable={{ text: user.lastName }}>
-            {user.lastName}
-          </Paragraph>
-        </Col>
-        <Col span={24}>
-          <Divider dashed orientation="left" plain>
-            Avatar
-          </Divider>
-          <figure>
-            <img src={user.avatar?.url || ""}/>
-          </figure>
-        </Col>
-      </Row>
-    </>
-  );
-};

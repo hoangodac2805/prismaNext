@@ -12,16 +12,42 @@ const GetUsers = (userInput: QueryUsersInput) => {
     },
   });
 };
-const createUser = (userInput:FormData) =>{
-  return baseApi.post<QueryUsersRes>(USER_ENDPOINT.CREATE,userInput)
-}
-const UpdateEmail = (userInput: {id:number, email: string }) => {
-  return baseApi.put<CommonUserRes>(USER_ENDPOINT.UPDATE_EMAIL,userInput);
+
+const GetUserByParam = (id: string | number) => {
+  return baseApi.get<QueryUserRes>(USER_ENDPOINT.GET_USER_PARAM(id));
+};
+
+const createUser = (userInput: FormData) => {
+  return baseApi.post<CommonUserRes>(USER_ENDPOINT.CREATE, userInput);
+};
+const deleteUser = (id: number) => {
+  return baseApi.delete<CommonUserRes>(USER_ENDPOINT.DELETE, {
+    params: {
+      id,
+    },
+  });
+};
+const UpdateEmail = (userInput: { id: number; email: string }) => {
+  return baseApi.put<QueryUserRes>(USER_ENDPOINT.UPDATE_EMAIL, userInput);
+};
+const updateUserName = (userInput: { id: number; userName: string }) => {
+  return baseApi.put<QueryUserRes>(USER_ENDPOINT.UPDATE_USERNAME, userInput);
+};
+const updateFirstName = (userInput: { id: number; firstName: string }) => {
+  return baseApi.put<QueryUserRes>(USER_ENDPOINT.UPDATE_FIRSTNAME, userInput);
+};
+const updateLastName = (userInput: { id: number; lastName: string }) => {
+  return baseApi.put<QueryUserRes>(USER_ENDPOINT.UPDATE_LATNAME, userInput);
 };
 const UsersApi = {
   GetUsers,
   UpdateEmail,
-  createUser
+  createUser,
+  deleteUser,
+  GetUserByParam,
+  updateUserName,
+  updateFirstName,
+  updateLastName
 };
 
 export default UsersApi;

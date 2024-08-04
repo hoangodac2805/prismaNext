@@ -24,6 +24,10 @@ declare global {
     paginate: Paginate;
   };
 
+  type QueryUserRes = {
+    user: CommonUserRes;
+  };
+
   type EditUserInput = {
     userName: string;
     firstName: string;
@@ -40,6 +44,6 @@ declare global {
     lastName?: string;
     email: string;
     password: string;
-    avatar?: { file: UploadFile, fileList: UploadFile[] };
+    avatar?: { file: UploadFile; fileList: UploadFile[] };
   };
 }

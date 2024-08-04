@@ -7,18 +7,31 @@ import {
   Upload,
   FormProps,
   notification,
+  UploadFile,
+  GetProp,
+  UploadProps,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
-import React from "react";
-import { UsersApi } from "@/services/api";
+import ImgCrop from 'antd-img-crop';
+import React, { useState } from "react";
 import { Pattern } from "@/libs/partern";
 import axios from "axios";
 import { getErrorMessageAxiosError } from "@/utils";
 import { useCreateUser } from "@/hooks/Mutation/users";
-const Add_UserForm = () => {
+interface Props {
+  onFormLoading: (value: boolean) => void
+}
+type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+const Add_UserForm: React.FC<Props> = ({ onFormLoading }) => {
   const [form] = Form.useForm();
+  const [fileList, setFileList] = useState<UploadFile[]>([
+  ]);
+  const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+  };
   const createUserMutation = useCreateUser();
   const handleSubmit: FormProps<AddUserInput>["onFinish"] = (values) => {
+    onFormLoading(true);
     let formData = new FormData();
     Object.entries(values).forEach((item) => {
       const [key, value] = item;
@@ -33,10 +46,19 @@ const Add_UserForm = () => {
         }
       }
     });
+    if (fileList.length > 0) {
+      const { originFileObj } = fileList[0];
+      if (originFileObj) {
+        formData.append("avatar", originFileObj, originFileObj.name);
+      }
+    }
     createUserMutation.mutate(formData, {
       onSuccess: () => {
         notification.success({ message: "Thêm user thành công" });
         form.resetFields();
+        setFileList([])
+        onFormLoading(false)
+
       },
       onError: (error) => {
         if (axios.isAxiosError(error)) {
@@ -47,9 +69,12 @@ const Add_UserForm = () => {
         } else {
           notification.error({ message: "Thêm user không thành công!" });
         }
+        onFormLoading(false)
+
       },
     });
   };
+
   return (
     <Form layout="vertical" onFinish={handleSubmit} form={form}>
       <Row gutter={[20, 20]}>
@@ -100,16 +125,21 @@ const Add_UserForm = () => {
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item name="avatar" label="Avatar">
-            <Upload
-              name="avatar"
-              listType="picture"
-              maxCount={1}
-              accept="image/*"
-            >
-              <Button icon={<UploadOutlined />}>Click to upload</Button>
-            </Upload>
+          <Form.Item<AddUserInput> label="Avatar" name={"avatar"}>
+            <ImgCrop rotationSlider aspect={1 / 1} showReset>
+              <Upload
+                name="avatar"
+                listType="picture-card"
+                maxCount={1}
+                accept="image/*"
+                onChange={onChange}
+              // onPreview={onPreview}
+              >
+                <Button icon={<UploadOutlined />}></Button>
+              </Upload>
+            </ImgCrop>
           </Form.Item>
+
         </Col>
         <Col span={12}>
           <Button htmlType="submit">Submit</Button>
