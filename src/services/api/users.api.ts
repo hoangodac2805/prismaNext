@@ -1,5 +1,6 @@
 import { baseApi } from "./base.api";
 import { USER_ENDPOINT } from "../endpoint";
+import { UploadFile } from "antd";
 
 const GetUsers = (userInput: QueryUsersInput) => {
   return baseApi.get<QueryUsersRes>(USER_ENDPOINT.GET_USERS, {
@@ -39,6 +40,20 @@ const updateFirstName = (userInput: { id: number; firstName: string }) => {
 const updateLastName = (userInput: { id: number; lastName: string }) => {
   return baseApi.put<QueryUserRes>(USER_ENDPOINT.UPDATE_LATNAME, userInput);
 };
+
+const updateAvatar = (form: FormData) => {
+  return baseApi.put<QueryUserRes>(USER_ENDPOINT.UPDATE_AVATAR, form);
+};
+
+const updateAvatarByUsed = (userInput: {
+  id: number;
+  avatarId: string | number;
+}) => {
+  return baseApi.put<QueryUserRes>(
+    USER_ENDPOINT.UPDATE_AVATAR_BY_USED,
+    userInput
+  );
+};
 const UsersApi = {
   GetUsers,
   UpdateEmail,
@@ -47,7 +62,9 @@ const UsersApi = {
   GetUserByParam,
   updateUserName,
   updateFirstName,
-  updateLastName
+  updateLastName,
+  updateAvatar,
+  updateAvatarByUsed,
 };
 
 export default UsersApi;

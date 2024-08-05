@@ -65,3 +65,20 @@ export const useUpdateLastName = () => {
     ...DefaultOptions(),
   });
 };
+
+
+export const useUpdateAvatar = () => {
+  return useMutation({
+    mutationFn: (form:FormData) =>
+      UsersApi.updateAvatar(form),
+    ...DefaultOptions(),
+  });
+};
+
+export const useUpdateAvatarByUsed = () => {
+  return useMutation({
+    mutationFn: (userInput:{id:number,avatarId: string|number}) =>
+      UsersApi.updateAvatarByUsed(userInput),
+    ...DefaultOptions(),
+  });
+};

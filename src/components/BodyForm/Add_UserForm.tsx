@@ -12,21 +12,20 @@ import {
   UploadProps,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
-import ImgCrop from 'antd-img-crop';
+import ImgCrop from "antd-img-crop";
 import React, { useState } from "react";
 import { Pattern } from "@/libs/partern";
 import axios from "axios";
 import { getErrorMessageAxiosError } from "@/utils";
 import { useCreateUser } from "@/hooks/Mutation/users";
 interface Props {
-  onFormLoading: (value: boolean) => void
+  onFormLoading: (value: boolean) => void;
 }
-type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 const Add_UserForm: React.FC<Props> = ({ onFormLoading }) => {
   const [form] = Form.useForm();
-  const [fileList, setFileList] = useState<UploadFile[]>([
-  ]);
-  const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const onChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
     setFileList(newFileList);
   };
   const createUserMutation = useCreateUser();
@@ -56,9 +55,8 @@ const Add_UserForm: React.FC<Props> = ({ onFormLoading }) => {
       onSuccess: () => {
         notification.success({ message: "Thêm user thành công" });
         form.resetFields();
-        setFileList([])
-        onFormLoading(false)
-
+        setFileList([]);
+        onFormLoading(false);
       },
       onError: (error) => {
         if (axios.isAxiosError(error)) {
@@ -69,8 +67,7 @@ const Add_UserForm: React.FC<Props> = ({ onFormLoading }) => {
         } else {
           notification.error({ message: "Thêm user không thành công!" });
         }
-        onFormLoading(false)
-
+        onFormLoading(false);
       },
     });
   };
@@ -133,13 +130,12 @@ const Add_UserForm: React.FC<Props> = ({ onFormLoading }) => {
                 maxCount={1}
                 accept="image/*"
                 onChange={onChange}
-              // onPreview={onPreview}
+                // onPreview={onPreview}
               >
                 <Button icon={<UploadOutlined />}></Button>
               </Upload>
             </ImgCrop>
           </Form.Item>
-
         </Col>
         <Col span={12}>
           <Button htmlType="submit">Submit</Button>

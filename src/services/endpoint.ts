@@ -17,4 +17,6 @@ export const USER_ENDPOINT = {
   UPDATE_USERNAME: AdminUserRouter + "updateUserName",
   UPDATE_FIRSTNAME: AdminUserRouter + "updateFirstName",
   UPDATE_LATNAME: AdminUserRouter + "updateLastName",
+  UPDATE_AVATAR: AdminUserRouter + "updateAvatar",
+  UPDATE_AVATAR_BY_USED: AdminUserRouter + "updateAvatarByUsed",
 };

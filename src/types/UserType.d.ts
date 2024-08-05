@@ -10,7 +10,7 @@ declare global {
     password: string;
     isActive: boolean;
     avatar?: Avatar;
-    usedAvatar?: Avatar[];
+    usedAvatars?: Avatar[];
     tokenVersion: number;
     role: Role;
     createdAt: Date;

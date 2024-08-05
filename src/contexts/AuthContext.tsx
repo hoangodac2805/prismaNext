@@ -36,8 +36,9 @@ export const AuthProvider: React.FC<{
     AuthApi.Login(input)
       .then((res) => {
         if ([Role.ADMIN, Role.SUPERADMIN].includes(res.data.user.role)) {
+          console.log(`remember`, remember);
           if (remember) {
-            Cookie.setAuthToken(res.data.token);
+            Cookie.setAuthToken(res.data.token,60*60*24*30);
           } else {
             Session.setAuthToken(res.data.token);
           }
