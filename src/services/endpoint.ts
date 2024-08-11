@@ -10,6 +10,7 @@ export const USER_ENDPOINT = {
   BASE: AdminUserRouter,
   CREATE: AdminUserRouter + "create",
   DELETE: AdminUserRouter + "delete",
+  DELETE_USED_AVATAR: AdminUserRouter + "deleteUsedAvatar",
   GET_USERS: AdminUserRouter + "getMany",
   GET_USER_PARAM: (id: number | string) =>
     AdminUserRouter + "getUserParams/" + id,

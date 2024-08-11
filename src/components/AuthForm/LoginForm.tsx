@@ -31,10 +31,9 @@ const LoginForm = () => {
           label="Email"
           name="email"
           rules={[
-            { required: true, message: "Vui lòng nhập email!" },
+            { required: true },
             {
               pattern: Pattern.Email,
-              message: "Vui lòng nhập đúng định dạng email!",
             },
           ]}
         >
@@ -44,7 +43,7 @@ const LoginForm = () => {
         <Form.Item<FieldType>
           label="Password"
           name="password"
-          rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" },{min : 8,message:"Mật khẩu ít nhất 8 ký tự"}]}
+          rules={[{ required: true }, { min: 8 }]}
         >
           <Input.Password />
         </Form.Item>

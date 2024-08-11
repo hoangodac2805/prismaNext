@@ -42,8 +42,8 @@ const ProfileDrawerBody: React.FC<{ user: CommonUserRes }> = ({ user }) => {
                     <Divider dashed orientation="left" plain>
                         Avatar
                     </Divider>
-                    <div style={{padding:"8px",border:"2px solid #000",width:"fit-content",borderRadius:"50%" }}>
-                        {user.avatar ? <Avatar size={200} src={user.avatar.url} /> : <Avatar size={200} icon={<UserOutlined />} />
+                    <div style={{padding:"4px",border:"2px solid #000",width:"fit-content",borderRadius:"50%" }}>
+                        {user.avatar ? <Avatar size={150} src={user.avatar.url} /> : <Avatar size={150} icon={<UserOutlined />} />
                         }
                     </div>
                 </Col>

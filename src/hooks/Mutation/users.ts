@@ -22,21 +22,28 @@ const DefaultOptions = () => {
 
 export const useCreateUser = () => {
   return useMutation({
-    mutationFn: (userInput: FormData) => UsersApi.createUser(userInput),
+    mutationFn: (userInput: CreateUserInput) => UsersApi.createUser(userInput),
     ...DefaultOptions(),
   });
 };
 
 export const useDeleteUser = () => {
   return useMutation({
-    mutationFn: (id: number) => UsersApi.deleteUser(id),
+    mutationFn: (id: DeleteUserInput) => UsersApi.deleteUser(id),
+    ...DefaultOptions(),
+  });
+};
+
+export const useDeleteUsedAvatar = () => {
+  return useMutation({
+    mutationFn: (userInput: DeleteUsedAvatarInput) => UsersApi.deleteUsedAvatar(userInput),
     ...DefaultOptions(),
   });
 };
 
 export const useUpdateEmail = () => {
   return useMutation({
-    mutationFn: (userInput: { id: number; email: string }) =>
+    mutationFn: (userInput: UpdateEmailInput) =>
       UsersApi.UpdateEmail(userInput),
     ...DefaultOptions(),
   });
@@ -44,7 +51,7 @@ export const useUpdateEmail = () => {
 
 export const useUpdateUserName = () => {
   return useMutation({
-    mutationFn: (userInput: { id: number; userName: string }) =>
+    mutationFn: (userInput: UpdateUserNameInput) =>
       UsersApi.updateUserName(userInput),
     ...DefaultOptions(),
   });
@@ -52,7 +59,7 @@ export const useUpdateUserName = () => {
 
 export const useUpdateFirstName = () => {
   return useMutation({
-    mutationFn: (userInput: { id: number; firstName: string }) =>
+    mutationFn: (userInput: UpdateFirstNameInput) =>
       UsersApi.updateFirstName(userInput),
     ...DefaultOptions(),
   });
@@ -60,7 +67,7 @@ export const useUpdateFirstName = () => {
 
 export const useUpdateLastName = () => {
   return useMutation({
-    mutationFn: (userInput: { id: number; lastName: string }) =>
+    mutationFn: (userInput: UpdateLastNameInput) =>
       UsersApi.updateLastName(userInput),
     ...DefaultOptions(),
   });
@@ -69,7 +76,7 @@ export const useUpdateLastName = () => {
 
 export const useUpdateAvatar = () => {
   return useMutation({
-    mutationFn: (form:FormData) =>
+    mutationFn: (form:UpdateAvatarInput) =>
       UsersApi.updateAvatar(form),
     ...DefaultOptions(),
   });
@@ -77,7 +84,7 @@ export const useUpdateAvatar = () => {
 
 export const useUpdateAvatarByUsed = () => {
   return useMutation({
-    mutationFn: (userInput:{id:number,avatarId: string|number}) =>
+    mutationFn: (userInput:UpdateAvatarByUsedInput) =>
       UsersApi.updateAvatarByUsed(userInput),
     ...DefaultOptions(),
   });

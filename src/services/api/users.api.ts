@@ -1,6 +1,5 @@
 import { baseApi } from "./base.api";
 import { USER_ENDPOINT } from "../endpoint";
-import { UploadFile } from "antd";
 
 const GetUsers = (userInput: QueryUsersInput) => {
   return baseApi.get<QueryUsersRes>(USER_ENDPOINT.GET_USERS, {
@@ -14,46 +13,48 @@ const GetUsers = (userInput: QueryUsersInput) => {
   });
 };
 
-const GetUserByParam = (id: string | number) => {
+const GetUserByParam = (id: GetUserByParamInput) => {
   return baseApi.get<QueryUserRes>(USER_ENDPOINT.GET_USER_PARAM(id));
 };
 
-const createUser = (userInput: FormData) => {
-  return baseApi.post<CommonUserRes>(USER_ENDPOINT.CREATE, userInput);
+const createUser = (userInput: CreateUserInput) => {
+  return baseApi.post<QueryUserRes>(USER_ENDPOINT.CREATE, userInput);
 };
-const deleteUser = (id: number) => {
-  return baseApi.delete<CommonUserRes>(USER_ENDPOINT.DELETE, {
+const deleteUser = (id: DeleteUserInput) => {
+  return baseApi.delete<QueryUserRes>(USER_ENDPOINT.DELETE, {
     params: {
       id,
     },
   });
 };
-const UpdateEmail = (userInput: { id: number; email: string }) => {
+
+const deleteUsedAvatar = (userInput: DeleteUsedAvatarInput) => {
+  return baseApi.put<QueryUserRes>(USER_ENDPOINT.DELETE_USED_AVATAR, userInput);
+}
+const UpdateEmail = (userInput: UpdateEmailInput) => {
   return baseApi.put<QueryUserRes>(USER_ENDPOINT.UPDATE_EMAIL, userInput);
 };
-const updateUserName = (userInput: { id: number; userName: string }) => {
+const updateUserName = (userInput: UpdateUserNameInput) => {
   return baseApi.put<QueryUserRes>(USER_ENDPOINT.UPDATE_USERNAME, userInput);
 };
-const updateFirstName = (userInput: { id: number; firstName: string }) => {
+const updateFirstName = (userInput: UpdateFirstNameInput) => {
   return baseApi.put<QueryUserRes>(USER_ENDPOINT.UPDATE_FIRSTNAME, userInput);
 };
-const updateLastName = (userInput: { id: number; lastName: string }) => {
+const updateLastName = (userInput: UpdateLastNameInput) => {
   return baseApi.put<QueryUserRes>(USER_ENDPOINT.UPDATE_LATNAME, userInput);
 };
 
-const updateAvatar = (form: FormData) => {
+const updateAvatar = (form: UpdateAvatarInput) => {
   return baseApi.put<QueryUserRes>(USER_ENDPOINT.UPDATE_AVATAR, form);
 };
 
-const updateAvatarByUsed = (userInput: {
-  id: number;
-  avatarId: string | number;
-}) => {
+const updateAvatarByUsed = (userInput: UpdateAvatarByUsedInput) => {
   return baseApi.put<QueryUserRes>(
     USER_ENDPOINT.UPDATE_AVATAR_BY_USED,
     userInput
   );
 };
+
 const UsersApi = {
   GetUsers,
   UpdateEmail,
@@ -65,6 +66,7 @@ const UsersApi = {
   updateLastName,
   updateAvatar,
   updateAvatarByUsed,
+  deleteUsedAvatar
 };
 
 export default UsersApi;

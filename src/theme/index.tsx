@@ -3,9 +3,20 @@
 import React from "react";
 import { ConfigProvider } from "antd";
 
+const validateMessages = {
+  required: "Vui lòng nhập ${name}!",
+  string :{
+    min: "${label} ít nhất ${min} ký tự",
+  },
+  pattern: {
+    mismatch: "Vui lòng nhập đúng định dạng ${name}"
+  }
+}
+
 const withTheme = (node: JSX.Element) => (
   <>
     <ConfigProvider
+      form={{ validateMessages }}
       theme={{
         token: {
           colorPrimary: "#2F54EB",
@@ -25,7 +36,7 @@ const withTheme = (node: JSX.Element) => (
             colorTextLabel: "#fff",
           },
           Divider: {
-            fontSize:16
+            fontSize: 16
           }
         },
       }}

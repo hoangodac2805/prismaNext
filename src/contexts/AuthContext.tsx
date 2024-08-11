@@ -8,10 +8,11 @@ import Session from "@/helpers/sessions";
 import { AuthApi } from "@/services/api";
 import Loading from "@/components/Loading";
 import { AUTH_ROUTER, NO_PROTECT_ROUTER, ROUTER } from "@/config/router";
-import { getErrorMessageAxiosError } from "@/utils";
+import { getErrorMessageAxiosError, handleApiError } from "@/utils";
 import LoginForm from "@/components/AuthForm/LoginForm";
 import useLoadingScreen from "@/hooks/useLoadingScreen";
 import { Role } from "@/enums";
+import { loginMessage } from "@/config/message";
 interface IAuthContext {
   authed: boolean;
   loading: boolean;
@@ -36,28 +37,20 @@ export const AuthProvider: React.FC<{
     AuthApi.Login(input)
       .then((res) => {
         if ([Role.ADMIN, Role.SUPERADMIN].includes(res.data.user.role)) {
-          console.log(`remember`, remember);
           if (remember) {
             Cookie.setAuthToken(res.data.token,60*60*24*30);
           } else {
             Session.setAuthToken(res.data.token);
           }
-          notification.success({ message: "Đăng nhập thành công" });
+          notification.success({ message: loginMessage.success });
           setAuthed(true);
           setLoginedUser(res.data.user);
         } else {
-          notification.warning({ message: "Không đủ quyền truy cập! " });
+          notification.warning({ message: loginMessage.unauthorize });
         }
       })
       .catch((error) => {
-        if (axios.isAxiosError(error)) {
-          notification.error({
-            message: "Đăng nhập không thành công!",
-            description: getErrorMessageAxiosError(error),
-          });
-          return;
-        }
-        notification.error({ message: "Đăng nhập không thành công!" });
+        handleApiError({error,messageError:loginMessage.fail})
       })
       .finally(() => {
         setLoading(false);

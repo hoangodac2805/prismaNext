@@ -5,7 +5,7 @@ import Title from "antd/es/typography/Title";
 import type { GetProp, TableProps } from "antd";
 import { Table } from "antd";
 import { useQueryUsers } from "@/hooks/Query/users";
-import { debounce, getErrorMessageAxiosError } from "@/utils";
+import { debounce, handleApiError } from "@/utils";
 import Link from "next/link";
 import { EditFilled, UserAddOutlined, UserOutlined, UserDeleteOutlined } from "@ant-design/icons";
 import { ROUTER } from "@/config/router";
@@ -15,7 +15,7 @@ import useAddUserDrawer from "@/hooks/Drawer/useAddUserDrawer";
 import { useQueryString } from "@/hooks/useQueryString";
 import ProfileDrawerBody from "@/components/SubUserComponent/ProfileDrawerBody";
 import { useDeleteUser } from "@/hooks/Mutation/users";
-import axios from "axios";
+import { deleteMessage } from "@/config/message";
 
 type ColumnsType<T> = TableProps<T>["columns"];
 
@@ -81,24 +81,17 @@ const Home = () => {
     openDrawer();
   };
 
-
-  const handleDeleteUser = (id:number) =>{
-    deleteUserMutation.mutate(id,{
-      onSuccess:()=>{
-        notification.success({ message: "Xoá user thành công" });
+  const handleDeleteUser = (id: number) => {
+    deleteUserMutation.mutate(id, {
+      onSuccess: () => {
+        notification.success({ message: deleteMessage.success("user") });
       },
-      onError:(error)=>{
-        if (axios.isAxiosError(error)) {
-          notification.error({
-            message: "Xóa user không thành công!",
-            description: getErrorMessageAxiosError(error),
-          });
-        } else {
-          notification.error({ message: "Xóa user không thành công!" });
-        }
+      onError: (error) => {
+        handleApiError({error,messageError:deleteMessage.fail("user")})
       }
     })
   }
+
   const columns: ColumnsType<CommonUserRes> = [
     {
       title: "ID",
@@ -149,7 +142,7 @@ const Home = () => {
             </Tooltip>
             <Tooltip title="Xóa">
               <Popconfirm title="Xóa user?" description="Bạn có muốn xóa user này" okText="Xóa" cancelText="Hủy" onConfirm={() => {
-               handleDeleteUser(record.id)
+                handleDeleteUser(record.id)
               }}>
                 <Button danger >
                   <UserDeleteOutlined />
@@ -205,6 +198,8 @@ const Home = () => {
         </Col>
         <Col span={24}>
           <Table
+            scroll={data?.data.users.length ? { x: 1000 } : undefined}
+            tableLayout="auto"
             columns={columns}
             rowKey={(record) => record.id}
             dataSource={data?.data.users}

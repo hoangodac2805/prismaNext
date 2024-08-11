@@ -1,9 +1,10 @@
 "use client";
 import React from "react";
-import { Layout, Menu, theme } from "antd";
+import { Flex, Layout, Menu, theme } from "antd";
 import withTheme from "@/theme";
 import { MenuData } from "@/data/menu";
 import { useRouter } from "next/navigation";
+import SiderUser from "@/components/SiderUser";
 const { Header, Content, Footer, Sider } = Layout;
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
@@ -23,15 +24,17 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           bottom: 0,
         }}
       >
-        <div className="demo-logo-vertical" />
-        <Menu
-          onClick={(info) => {
-            router.push(info.key);
-          }}
-          theme="dark"
-          mode="inline"
-          items={MenuData}
-        />
+        <Flex vertical justify="space-between" style={{ height: "100%", paddingBottom: 20 }}>
+          <Menu
+            onClick={(info) => {
+              router.push(info.key);
+            }}
+            theme="dark"
+            mode="inline"
+            items={MenuData}
+          />
+          <SiderUser />
+        </Flex>
       </Sider>
       <Layout style={{ marginLeft: 200 }}>
         <Header style={{ padding: 0, background: colorBgContainer }} />

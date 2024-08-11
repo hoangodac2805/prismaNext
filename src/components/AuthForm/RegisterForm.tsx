@@ -6,10 +6,11 @@ import withTheme from "@/theme";
 import styles from "./_authForm.module.scss";
 import { AuthApi } from "@/services/api";
 import axios from "axios";
-import { getErrorMessageAxiosError } from "@/utils";
+import { getErrorMessageAxiosError, handleApiError } from "@/utils";
 import { useRouter } from "next/navigation";
 import { ROUTER } from "@/config/router";
 import useLoadingScreen from "@/hooks/useLoadingScreen";
+import { passwordMessage, registerMessage } from "@/config/message";
 type FieldType = RegisterUserInput & {
   password2?: string;
 };
@@ -22,24 +23,12 @@ const RegisterForm = () => {
     AuthApi.Register(values)
       .then((res) => {
         notification.success({
-          message: "Đăng ký thành công!",
+          message: registerMessage.success,
         });
         router.push(ROUTER.LOGIN);
       })
       .catch((error) => {
-        if (axios.isAxiosError(error)) {
-          notification.error({
-            message: "Đăng ký không thành công",
-            description: getErrorMessageAxiosError(
-              error,
-              "Đăng ký không thành công, vui lòng thử lại!"
-            ),
-          });
-          return;
-        }
-        notification.error({
-          message: "Đăng ký không thành công",
-        });
+        handleApiError({error,messageError:registerMessage.fail})
       })
       .finally(() => {
         setLoadingOff();
@@ -59,10 +48,9 @@ const RegisterForm = () => {
           label="Email"
           name="email"
           rules={[
-            { required: true, message: "Vui lòng nhập email!" },
+            { required: true },
             {
               pattern: Pattern.Email,
-              message: "Vui lòng nhập đúng định dạng email!",
             },
           ]}
         >
@@ -71,7 +59,7 @@ const RegisterForm = () => {
         <Form.Item<FieldType>
           label="User Name"
           name="userName"
-          rules={[{ required: true, message: "Vui lòng nhập username!" }]}
+          rules={[{ required: true }]}
         >
           <Input />
         </Form.Item>
@@ -84,10 +72,7 @@ const RegisterForm = () => {
         <Form.Item<FieldType>
           label="Password"
           name="password"
-          rules={[
-            { required: true, message: "Vui lòng nhập mật khẩu!" },
-            { min: 8, message: "Mật khẩu ít nhất 8 ký tự" },
-          ]}
+          rules={[{ required: true }, { min: 8 }]}
         >
           <Input.Password />
         </Form.Item>
@@ -104,7 +89,7 @@ const RegisterForm = () => {
                 if (!value || getFieldValue("password") === value) {
                   return Promise.resolve();
                 }
-                return Promise.reject(new Error("Password không trùng nhau!"));
+                return Promise.reject(new Error(passwordMessage.notMatch));
               },
             }),
           ]}

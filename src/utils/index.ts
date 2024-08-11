@@ -1,6 +1,7 @@
 import { ERRORTYPE } from "@/enums";
+import { notification } from "antd";
 import { RcFile } from "antd/es/upload";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 
 export const getErrorMessageAxiosError = (
   error: AxiosError<any>,
@@ -54,3 +55,25 @@ export const getBase64 = (file: RcFile): Promise<string> =>
     reader.onerror = (error) => reject(error);
   });
 
+export const handleApiError = ({
+  error,
+  messageError,
+}: {
+  error: any;
+  messageError?: string;
+}) => {
+  if (axios.isAxiosError(error)) {
+    if (messageError) {
+      notification.error({
+        message: messageError,
+        description: getErrorMessageAxiosError(error),
+      });
+    }
+  } else {
+    if (messageError) {
+      notification.error({
+        message: messageError,
+      });
+    }
+  }
+};
